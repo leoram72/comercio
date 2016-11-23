@@ -20,11 +20,14 @@ public class EmpleadoDaoImpl extends EjecutaDaoJdbc<Empleados> implements Emplea
 	public Empleados create(Empleados empleado) throws ClassNotFoundException, SQLException {
         String query;
 		               
-        query = "INSERT INTO empleados VALUES(uuid_generate_v4(),'" + empleado.getEmCodigo() + "','" + empleado.getEmTipoIdent() + "',"
+        /**query = "INSERT INTO empleados VALUES(uuid_generate_v4(),'" + empleado.getEmCodigo() + "','" + empleado.getEmTipoIdent() + "',"
         		+"'"+empleado.getEmNumeroDent()+"','"+empleado.getEmNombres()+"','"+empleado.getEmApellidos()+"','"+empleado.getEmDireccion()+"' "
         		+"'"+empleado.getEmTelefono()+"','"+empleado.getEmMovil()+"','"+empleado.getEmCargo()+"','"+empleado.getEmDepartamento()+"' "
         		+"'"+empleado.getEmArea()+"' "
-        		+"')";
+        		+"')";**/
+        
+        query = "INSERT INTO empleados VALUES(uuid_generate_v4(),?,?,?,?,?,?,?,?,?,?,?)";
+        
         empleado = EjecutaQuery(empleado,query);
 
         return empleado;

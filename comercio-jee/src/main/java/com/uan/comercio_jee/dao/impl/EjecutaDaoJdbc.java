@@ -2,6 +2,7 @@ package com.uan.comercio_jee.dao.impl;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -26,6 +27,7 @@ public class EjecutaDaoJdbc<T> {
 		Statement stm=null;
 		Connection con=null;
 		ResultSet rs=null;
+		PreparedStatement ps=null;
 		
             try
             {
@@ -36,7 +38,13 @@ public class EjecutaDaoJdbc<T> {
                     stm = con.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE,
                                                       ResultSet.CONCUR_READ_ONLY);
  
-                    rs= stm.executeQuery(sql);
+                    ps = con.prepareStatement(sql);
+                    
+                    
+                    rs = ps.executeQuery(sql);
+                    
+                    
+                    //rs= stm.executeQuery(sql);
  
                     CachedRowSet crs = new CachedRowSetImpl();
                     crs.populate(rs);
@@ -72,6 +80,7 @@ public class EjecutaDaoJdbc<T> {
     {
     	Statement stm=null;
 		Connection con=null;
+		PreparedStatement ps=null;
  
             try
             {
@@ -81,6 +90,10 @@ public class EjecutaDaoJdbc<T> {
                     String url = "postgres://rhoaziflcstqqp:wGE0eJY923TIa5DNP0lDsbtZBU@ec2-23-23-226-41.compute-1.amazonaws.com:5432/d6acd5rlnmusk0";
                     //con = DriverManager.getConnection(url, "postgres","123456");
                     con = DriverManager.getConnection(url, "rhoaziflcstqqp","wGE0eJY923TIa5DNP0lDsbtZBU");
+                    
+                    ps = con.prepareStatement(sql);
+                    
+                    entidad.getClass().get
                     stm = con.createStatement();
  
                     stm.execute(sql);
