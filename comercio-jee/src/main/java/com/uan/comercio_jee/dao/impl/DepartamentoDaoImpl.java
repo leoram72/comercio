@@ -18,38 +18,42 @@ public class DepartamentoDaoImpl extends EjecutaDaoJdbc<Departamentos> implement
 	
 	public Departamentos create(Departamentos departamento) throws ClassNotFoundException, SQLException {
         String query;
+        String[][] parametros={{"DpCodigo","dpCodigo"},{"DpDesc","dpDesc"}};
 		               
-        query = "INSERT INTO departamentos VALUES(uuid_generate_v4(),'" + departamento.getDpCodigo() + "','" + departamento.getDpDesc() + "')";
-        departamento = EjecutaQuery(departamento,query);
+        query = "INSERT INTO departamentos VALUES(uuid_generate_v4(),?,?)";
+        departamento = EjecutaQuery(departamento,query,parametros);
 
         return departamento;
     }
     
     public Departamentos update(Departamentos departamento) throws ClassNotFoundException, SQLException {
         String query;
+        String[][] parametros={{"DpCodigo","dpCodigo"},{"DpDesc","dpDesc"},{"DpLlave","dpLlave"}};
 		               
-        query = "UPDATE departamentos SET dp_codigo = '" + departamento.getDpCodigo() + "', dp_desc = '" + departamento.getDpDesc() + "' WHERE dp_llave = '"+departamento.getDpLlave()+"' ";
-        departamento = EjecutaQuery(departamento,query);
+        query = "UPDATE departamentos SET dp_codigo = ?, dp_desc = ? WHERE dp_llave = ? ";
+        departamento = EjecutaQuery(departamento,query,parametros);
 
         return departamento;
     }
     
     public void delete(Departamentos departamento) throws ClassNotFoundException, SQLException {
         String query;
+        String[][] parametros={{"DpLlave","dpLlave"}};
 		               
-        query = "DELETE FROM departamentos WHERE dp_llave = '" + departamento.getDpLlave() + "' ";
-        EjecutaQuery(departamento,query);
+        query = "DELETE FROM departamentos WHERE dp_llave = ? ";
+        EjecutaQuery(departamento,query,parametros);
 
     }
     
     public List<Departamentos> findAll() throws ClassNotFoundException, SQLException {
     	String query;
+    	String[] parametros={};
     	CachedRowSet crs = new CachedRowSetImpl();
         List<Departamentos> listdepartamento = new ArrayList<Departamentos>(); 
         Departamentos departamento = new Departamentos();
 		               
         query = "SELECT * FROM departamentos ";
-        crs=EjecutaRS(query);
+        crs=EjecutaRS(query,parametros);
         
         while(crs.next()){
         	departamento.setDpLlave(crs.getString("dp_llave"));
@@ -61,13 +65,14 @@ public class DepartamentoDaoImpl extends EjecutaDaoJdbc<Departamentos> implement
         return listdepartamento;
     }
 
-	public Departamentos findById(String arllave) throws ClassNotFoundException, SQLException {
+	public Departamentos findById(String dpllave) throws ClassNotFoundException, SQLException {
 		String query;
+		String[] parametros={dpllave};
         Departamentos departamento = new Departamentos(); 
         CachedRowSet crs = new CachedRowSetImpl();
 		               
-        query = "SELECT * FROM departamentos WHERE ar_llave = '" + arllave + "' ";
-        crs=EjecutaRS(query);
+        query = "SELECT * FROM departamentos WHERE ar_llave = ? ";
+        crs=EjecutaRS(query,parametros);
         crs.next();
         departamento.setDpLlave(crs.getString("dp_llave"));
         departamento.setDpCodigo(crs.getString("dp_codigo"));

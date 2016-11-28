@@ -1,11 +1,16 @@
 package com.uan.comercio_jee.dao.impl;
 
+import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.sql.Connection;
+import java.sql.Date;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -22,12 +27,15 @@ public class EjecutaDaoJdbc<T> {
         this.claseEntidad = claseEntidad;
     }
     
-	public CachedRowSet EjecutaRS(String sql) throws SQLException, ClassNotFoundException 
+	public CachedRowSet EjecutaRS(String sql,String[] parametros) throws SQLException, ClassNotFoundException 
     {
 		Statement stm=null;
 		Connection con=null;
 		ResultSet rs=null;
 		PreparedStatement ps=null;
+		Method[] metodos;
+		String cad;
+		int i=0;
 		
             try
             {
@@ -40,12 +48,23 @@ public class EjecutaDaoJdbc<T> {
  
                     ps = con.prepareStatement(sql);
                     
+                    i=0;
+                    for(String parametro: parametros){
+                    	cad = ps.getParameterMetaData().getParameterTypeName(i+1);
+                    	switch(cad){
+                    	
+                    	case "varchar":
+                    		ps.setString(i+1,parametro);               			
+                    		break;
+                    	case "text":
+                    		ps.setString(i+1,parametro);               			
+                    		break;
+                    	}
+                    	i++;
+                    }
                     
-                    rs = ps.executeQuery(sql);
+                    rs = ps.executeQuery();
                     
-                    
-                    //rs= stm.executeQuery(sql);
- 
                     CachedRowSet crs = new CachedRowSetImpl();
                     crs.populate(rs);
  
@@ -76,33 +95,78 @@ public class EjecutaDaoJdbc<T> {
  
     }
  
-    public T  EjecutaQuery(T entidad,String sql) throws SQLException, ClassNotFoundException 
+    public T  EjecutaQuery(T entidad,String sql,String[][] parametros) throws SQLException, ClassNotFoundException 
     {
     	Statement stm=null;
 		Connection con=null;
 		PreparedStatement ps=null;
+		int i=0;
+		int j=0;
+		String cad=null;
+		String temp=null;
+		Method[] metodos;
  
             try
             {
                     Class.forName("org.postgresql.Driver");
  
-                    //String url = "jdbc:postgresql://127.0.0.1:5432/comerciodb";
-                    String url = "postgres://rhoaziflcstqqp:wGE0eJY923TIa5DNP0lDsbtZBU@ec2-23-23-226-41.compute-1.amazonaws.com:5432/d6acd5rlnmusk0";
-                    //con = DriverManager.getConnection(url, "postgres","123456");
-                    con = DriverManager.getConnection(url, "rhoaziflcstqqp","wGE0eJY923TIa5DNP0lDsbtZBU");
+                    String url = "jdbc:postgresql://127.0.0.1:5432/comerciodb";
+                    //String url = "postgres://rhoaziflcstqqp:wGE0eJY923TIa5DNP0lDsbtZBU@ec2-23-23-226-41.compute-1.amazonaws.com:5432/d6acd5rlnmusk0";
+                    con = DriverManager.getConnection(url, "postgres","123456");
+                    //con = DriverManager.getConnection(url, "rhoaziflcstqqp","wGE0eJY923TIa5DNP0lDsbtZBU");
                     
                     ps = con.prepareStatement(sql);
+                    i=0;
+                    for(String[] parametro: parametros){
+                    	cad = ps.getParameterMetaData().getParameterTypeName(i+1);
+                    	switch(cad){
+                    	
+                    	case "varchar":
+	                    	metodos = entidad.getClass().getDeclaredMethods();
+	                		for(Method metodo: metodos){
+	                			
+	                			if (metodo.getName().equals("get"+parametro[0])){
+	                				ps.setString(i+1,metodo.invoke(entidad,null).toString());}                			
+	                		}
+	                		i++;
+	                		break;
+                    	case "integer":
+                    		metodos = entidad.getClass().getDeclaredMethods();
+	                		for(Method metodo: metodos){
+	                			
+	                			if (metodo.getName().equals("get"+parametro[0])){
+	                				ps.setInt(i+1,Integer.parseInt(metodo.invoke(entidad,null).toString()));}                			
+	                		}
+	                		i++;
+                    		break;
+                    	case "date":
+                    		metodos = entidad.getClass().getDeclaredMethods();
+	                		for(Method metodo: metodos){
+	                			
+	                			if (metodo.getName().equals("get"+parametro[0])){
+	                				ps.setDate(i+1,Date.valueOf(metodo.invoke(entidad,null).toString()));}                			
+	                		}
+	                		i++;
+                    		break;
+                    	case "text":
+                    		metodos = entidad.getClass().getDeclaredMethods();
+	                		for(Method metodo: metodos){
+	                			
+	                			if (metodo.getName().equals("get"+parametro[0])){
+	                				ps.setString(i+1,metodo.invoke(entidad,null).toString());}                			
+	                		}
+	                		i++;
+                    		break;
+                    	}
+                    }
+                     
+                    ps.executeUpdate();
                     
-                    entidad.getClass().get
-                    stm = con.createStatement();
- 
-                    stm.execute(sql);
-                    //entidad.getClass() = stm.getClass();
             }
-            catch(SQLException sqle)
+            catch(SQLException | IllegalAccessException | IllegalArgumentException | InvocationTargetException sqle)
             {
-                   throw sqle;
-            }finally {
+                   sqle.printStackTrace();
+            } finally {
             	try {
                     stm.close();
                 } catch (SQLException ex) {

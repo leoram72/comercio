@@ -19,47 +19,50 @@ public class OrdenCompraEncDaoImpl extends EjecutaDaoJdbc<OrdenCompraEnc> implem
 	
 	public OrdenCompraEnc create(OrdenCompraEnc ordencompraenc) throws ClassNotFoundException, SQLException {
         String query;
+        String[][] parametros={{"EocNimeroOc","EocNimeroOc"},{"EocFecha","EocFecha"},{"EocCliente","EocCliente"},
+        		{"EocValTotal","EocValTotal"},{"EocValImpuesto","EocValImpuesto"},{"EocValSubtotal","EocValSubtotal"},{"EocFecha","EocFecha"}};
 		               
-        query = "INSERT INTO orden_compra_enc VALUES(uuid_generate_v4(),'" + ordencompraenc.getEocNimeroOc() + "','" + ordencompraenc.getEocFecha() + "',"
-        		+"'"+ordencompraenc.getEocCliente()+"','"+ordencompraenc.getEocValTotal()+"','"+ordencompraenc.getEocValImpuesto()+"','"+ordencompraenc.getEocValSubtotal()+"' "
-        		+"'"+ordencompraenc.getEocFecha()+"','"
-        		+"')";
-        ordencompraenc = EjecutaQuery(ordencompraenc,query);
+        query = "INSERT INTO orden_compra_enc VALUES(uuid_generate_v4(),?,?,?,?,?,?,?)";
+        ordencompraenc = EjecutaQuery(ordencompraenc,query,parametros);
 
         return ordencompraenc;
     }
     
     public OrdenCompraEnc update(OrdenCompraEnc ordencompraenc) throws ClassNotFoundException, SQLException {
         String query;
+        String[][] parametros={{"EocNimeroOc","EocNimeroOc"},{"EocFecha","EocFecha"},{"EocCliente","EocCliente"},
+        		{"EocValTotal","EocValTotal"},{"EocValImpuesto","EocValImpuesto"},{"EocValSubtotal","EocValSubtotal"},{"EocFecha","EocFecha"},{"EocLlave","eocLlave"}};
 		               
-        query = "UPDATE orden_compra_enc SET eoc_nimero_oc = '" + ordencompraenc.getEocNimeroOc() + "', eoc_fecha = '" + ordencompraenc.getEocFecha() + "', "
-        		+"eoc_cliente = '"+ordencompraenc.getEocCliente()+"', "
-        		+"eoc_val_total ='"+ordencompraenc.getEocValTotal()+"', "
-        		+"eoc_val_impuesto ='"+ordencompraenc.getEocValImpuesto()+"', "
-        		+"eoc_val_subtotal ='"+ordencompraenc.getEocValSubtotal()+"', "
-        		+"eoc_fecha_pago ='"+ordencompraenc.getEocFecha()+"', "
-        		+" WHERE eoc_llave = '"+ordencompraenc.getEocLlave()+"' ";
-        ordencompraenc = EjecutaQuery(ordencompraenc,query);
+        query = "UPDATE orden_compra_enc SET eoc_nimero_oc = ?, eoc_fecha = ?, "
+        		+"eoc_cliente = ?, "
+        		+"eoc_val_total =?, "
+        		+"eoc_val_impuesto =?, "
+        		+"eoc_val_subtotal =?, "
+        		+"eoc_fecha_pago =?, "
+        		+" WHERE eoc_llave = ? ";
+        ordencompraenc = EjecutaQuery(ordencompraenc,query,parametros);
 
         return ordencompraenc;
     }
     
     public void delete(OrdenCompraEnc ordencompraenc) throws ClassNotFoundException, SQLException {
         String query;
-		               
-        query = "DELETE FROM ordencompraencs WHERE eoc_llave = '" + ordencompraenc.getEocLlave() + "' ";
-        EjecutaQuery(ordencompraenc,query);
+        String[][] parametros={{"EocLlave","eocLlave"}};
+        
+        query = "DELETE FROM orden_compra_enc WHERE eoc_llave = ? ";
+        EjecutaQuery(ordencompraenc,query,parametros);
 
     }
     
     public List<OrdenCompraEnc> findAll() throws ClassNotFoundException, SQLException {
     	String query;
+    	String[] parametros={};
     	CachedRowSet crs = new CachedRowSetImpl();
         List<OrdenCompraEnc> listordencompraenc = new ArrayList<OrdenCompraEnc>(); 
         OrdenCompraEnc ordencompraenc = new OrdenCompraEnc();
 		               
-        query = "SELECT * FROM ordencompraencs ";
-        crs=EjecutaRS(query);
+        query = "SELECT * FROM orden_compra_enc ";
+        crs=EjecutaRS(query,parametros);
         
         while(crs.next()){
         	ordencompraenc.setEocLlave(crs.getString("eoc_llave"));
@@ -79,11 +82,12 @@ public class OrdenCompraEncDaoImpl extends EjecutaDaoJdbc<OrdenCompraEnc> implem
 
 	public OrdenCompraEnc findById(String eocllave) throws ClassNotFoundException, SQLException {
 		String query;
+		String[] parametros={eocllave};
         OrdenCompraEnc ordencompraenc = new OrdenCompraEnc(); 
         CachedRowSet crs = new CachedRowSetImpl();
 		               
-        query = "SELECT * FROM ordencompraencs WHERE ar_llave = '" + eocllave + "' ";
-        crs=EjecutaRS(query);
+        query = "SELECT * FROM orden_compra_enc WHERE ar_llave = ? ";
+        crs=EjecutaRS(query,parametros);
         crs.next();
     	ordencompraenc.setEocLlave(crs.getString("eoc_llave"));
     	ordencompraenc.setEocNimeroOc(crs.getInt("eoc_nimero_oc"));

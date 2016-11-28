@@ -19,48 +19,52 @@ public class ItemDaoImpl extends EjecutaDaoJdbc<Items> implements ItemDao{
 	
 	public Items create(Items item) throws ClassNotFoundException, SQLException {
         String query;
+        String[][] parametros={{"ItCodigo","itCodigo"},{"ItDescripcion","itDescripcion"},{"ItImagen","itImagen"},
+        		{"ItCategoria","itCategoria"},{"ItFamilia","itFamilia"},{"ItUdm","itUdm"}};
 		               
-        query = "INSERT INTO items VALUES(uuid_generate_v4(),'" + item.getItCodigo() + "','" + item.getItDescripcion() + "', "
-        		+"'"+item.getItImagen()+"','"+item.getItCategoria()+"','"+item.getItFamilia()+"','"+item.getItUdm()+"', "
-        		+"'"+item.getItPrecioVenta()+"','"+item.getItPrecioVenta()+"' " 
-        		+"')";
-        item = EjecutaQuery(item,query);
+        query = "INSERT INTO items VALUES(uuid_generate_v4(),?,?,?,?,?,?,?,?)";
+        item = EjecutaQuery(item,query,parametros);
 
         return item;
     }
     
     public Items update(Items item) throws ClassNotFoundException, SQLException {
         String query;
+        String[][] parametros={{"ItCodigo","itCodigo"},{"ItDescripcion","itDescripcion"},{"ItImagen","itImagen"},
+        		{"ItCategoria","itCategoria"},{"ItFamilia","itFamilia"},{"ItUdm","itUdm"},{"ItLlave","itLlave"}};
 		               
-        query = "UPDATE items SET it_codigo = '" + item.getItCodigo() + "', it_descripcion = '" + item.getItDescripcion() +"', " 
-        		+"it_imagen ='"+item.getItImagen()+"', "
-        		+"it_categoria = '"+item.getItCategoria()+"', "
-        		+"it_familia = '"+item.getItFamilia()+"', "
-        		+"it_udm = '"+item.getItUdm()+"', "
-        		+"it_precio_venta = '"+item.getItPrecioVenta()+"', "
-        		+"it_precio_compra = '"+item.getItPrecioVenta()+"' " 
-        		+" WHERE it_llave = '"+item.getItLlave()+"' ";
-        item = EjecutaQuery(item,query);
+        query = "UPDATE items SET it_codigo = ?, it_descripcion = ?, " 
+        		+"it_imagen =?, "
+        		+"it_categoria = ?, "
+        		+"it_familia = ?, "
+        		+"it_udm = ?, "
+        		+"it_precio_venta = ?, "
+        		+"it_precio_compra = ? " 
+        		+" WHERE it_llave = ? ";
+        item = EjecutaQuery(item,query,parametros);
 
         return item;
     }
     
     public void delete(Items item) throws ClassNotFoundException, SQLException {
         String query;
+        String[][] parametros={{"ItLlave","itLlave"}};
 		               
-        query = "DELETE FROM items WHERE it_llave = '" + item.getItLlave() + "' ";
-        EjecutaQuery(item,query);
+        query = "DELETE FROM items WHERE it_llave = ? ";
+        EjecutaQuery(item,query,parametros);
 
     }
     
     public List<Items> findAll() throws ClassNotFoundException, SQLException {
     	String query;
+    	String[] parametros={};
+    	
     	CachedRowSet crs = new CachedRowSetImpl();
         List<Items> listitem = new ArrayList<Items>(); 
         Items item = new Items();
 		               
         query = "SELECT * FROM items ";
-        crs=EjecutaRS(query);
+        crs=EjecutaRS(query,parametros);
         
         while(crs.next()){
         	item.setItLlave(crs.getString("it_llave"));
@@ -78,13 +82,14 @@ public class ItemDaoImpl extends EjecutaDaoJdbc<Items> implements ItemDao{
         return listitem;
     }
 
-	public Items findById(String arllave) throws ClassNotFoundException, SQLException {
+	public Items findById(String itllave) throws ClassNotFoundException, SQLException {
 		String query;
+		String[] parametros={itllave};
         Items item = new Items(); 
         CachedRowSet crs = new CachedRowSetImpl();
 		               
-        query = "SELECT * FROM items WHERE fm_llave = '" + arllave + "' ";
-        crs=EjecutaRS(query);
+        query = "SELECT * FROM items WHERE fm_llave = ? ";
+        crs=EjecutaRS(query,parametros);
         crs.next();
         item.setItLlave(crs.getString("it_llave"));
         item.setItCodigo(crs.getString("it_codigo"));

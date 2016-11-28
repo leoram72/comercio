@@ -21,7 +21,7 @@ public class App
         
         AreaDaoImpl areaimpl = new AreaDaoImpl();
         
-        areaimpl.create(area);
+        //areaimpl.create(area);
         area.setArCodigo("DES-09");
         areaimpl.update(area);
         areaimpl.findById("7dfe40e4-9376-42f7-ac0f-46a93d079c0b");

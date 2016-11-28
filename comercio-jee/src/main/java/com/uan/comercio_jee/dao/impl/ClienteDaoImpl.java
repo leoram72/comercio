@@ -20,54 +20,58 @@ public class ClienteDaoImpl extends EjecutaDaoJdbc<Clientes> implements ClienteD
 	
 	public Clientes create(Clientes cliente) throws ClassNotFoundException, SQLException {
         String query;
+        String[][] parametros={{"ClCodigo","clCodigo"},{"ClTipoIdent","clTipoIdent"},{"ClNumeroIdent","clNumeroIdent"},{"ClDigitoVerificacion","clDigitoVerificacion"},{"ClRazonSocial","clRazonSocial"},
+        {"ClPrimerNombre","clPrimerNombre"},{"ClSegundoNombre","clSegundoNombre"},{"ClPrimerApellido","clPrimerApellido"},{"ClSegundoApellido","clSegundoApellido"},{"ClDireccion","clDireccion"},
+        {"ClTelefono","clTelefono"},{"ClCorreoElectronico","clCorreoElectronico"},{"ClFechaCreacion","clFechaCreacion"}};
 		               
-        query = "INSERT INTO clientes VALUES(uuid_generate_v4(),'" + cliente.getClCodigo() + "','" + cliente.getClTipoIdent() + "',"
-        		+"'"+cliente.getClNumeroIdent()+"','"+cliente.getClDigitoVerificacion()+"','"+cliente.getClRazonSocial()+"',"
-        		+"'"+cliente.getClPrimerNombre()+"','"+cliente.getClSegundoNombre()+"','"+cliente.getClPrimerApellido()+"',"
-        		+"'"+cliente.getClSegundoApellido()+"','"+cliente.getClDireccion()+"','"+cliente.getClTelefono()+"','"+cliente.getClCorreoElectronico()+"',"
-        		+"'"+cliente.getClFechaCreacion()+"'"+")";
-        cliente = EjecutaQuery(cliente,query);
+        query = "INSERT INTO clientes VALUES(uuid_generate_v4(),?,?,?,?,?,?,?,?,?,?,?,?,?)";
+        cliente = EjecutaQuery(cliente,query,parametros);
 
         return cliente;
     }
     
     public Clientes update(Clientes cliente) throws ClassNotFoundException, SQLException {
         String query;
+        String[][] parametros={{"ClCodigo","clCodigo"},{"ClTipoIdent","clTipoIdent"},{"ClNumeroIdent","clNumeroIdent"},{"ClDigitoVerificacion","clDigitoVerificacion"},{"ClRazonSocial","clRazonSocial"},
+                {"ClPrimerNombre","clPrimerNombre"},{"ClSegundoNombre","clSegundoNombre"},{"ClPrimerApellido","clPrimerApellido"},{"ClSegundoApellido","clSegundoApellido"},{"ClDireccion","clDireccion"},
+                {"ClTelefono","clTelefono"},{"ClCorreoElectronico","clCorreoElectronico"},{"ClFechaCreacion","clFechaCreacion"},{"ClLlave","clLlave"}};
 		               
         query = "UPDATE clientes SET cl_codigo = '" + cliente.getClCodigo() + "', cl_tipo_ident = '" + cliente.getClTipoIdent()+"', "
-        		+"cl_numero_ident ='"+cliente.getClNumeroIdent()+"', "
-        		+"cl_digito_verificacion ='"+cliente.getClDigitoVerificacion()+"', "
-        		+"cl_razon_social ='"+cliente.getClRazonSocial()+"', "
-        		+"cl_primer_nombre ='"+cliente.getClPrimerNombre()+"', "
-        		+"cl_segundo_nombre ='"+cliente.getClSegundoNombre()+"', "
-        		+"cl_primer_apellido ='"+cliente.getClPrimerApellido()+"', "
-        		+"cl_segundo_apellido ='"+cliente.getClSegundoApellido()+"', "
-        		+"cl_direccion ='"+cliente.getClDireccion()+"', "
-        		+"cl_telefono ='"+cliente.getClTelefono()+"', "
-        		+"cl_correo_electronico ='"+cliente.getClCorreoElectronico()+"', "
-        		+"cl_fecha_creacion ='"+cliente.getClFechaCreacion()+"' "
-        		+" WHERE ar_llave = '"+cliente.getClLlave()+"' ";
-        cliente = EjecutaQuery(cliente,query);
+        		+"cl_numero_ident = ?, "
+        		+"cl_digito_verificacion = ?, "
+        		+"cl_razon_social = ?, "
+        		+"cl_primer_nombre = ?, "
+        		+"cl_segundo_nombre = ?, "
+        		+"cl_primer_apellido = ?, "
+        		+"cl_segundo_apellido =?, "
+        		+"cl_direccion =?, "
+        		+"cl_telefono =?, "
+        		+"cl_correo_electronico =?, "
+        		+"cl_fecha_creacion =? "
+        		+" WHERE ar_llave = ? ";
+        cliente = EjecutaQuery(cliente,query,parametros);
 
         return cliente;
     }
     
     public void delete(Clientes cliente) throws ClassNotFoundException, SQLException {
         String query;
+        String[][] parametros={{"ClLlave","clLlave"}};
 		               
-        query = "DELETE FROM clientes WHERE cl_llave = '" + cliente.getClLlave() + "' ";
-        EjecutaQuery(cliente,query);
+        query = "DELETE FROM clientes WHERE cl_llave = ? ";
+        EjecutaQuery(cliente,query,parametros);
 
     }
     
     public List<Clientes> findAll() throws ClassNotFoundException, SQLException {
     	String query;
+    	String[] parametros={};
     	CachedRowSet crs = new CachedRowSetImpl();
         List<Clientes> listcliente = new ArrayList<Clientes>(); 
         Clientes cliente = new Clientes();
 		               
         query = "SELECT * FROM clientes ";
-        crs=EjecutaRS(query);
+        crs=EjecutaRS(query,parametros);
         
         while(crs.next()){
         	cliente.setClLlave(crs.getString("cl_llave"));
@@ -89,13 +93,14 @@ public class ClienteDaoImpl extends EjecutaDaoJdbc<Clientes> implements ClienteD
         return listcliente;
     }
 
-	public Clientes findById(String arllave) throws ClassNotFoundException, SQLException {
+	public Clientes findById(String clllave) throws ClassNotFoundException, SQLException {
 		String query;
+		String[] parametros={clllave};
         Clientes cliente = new Clientes(); 
         CachedRowSet crs = new CachedRowSetImpl();
 		               
-        query = "SELECT * FROM clientes WHERE cl_llave = '" + arllave + "' ";
-        crs=EjecutaRS(query);
+        query = "SELECT * FROM clientes WHERE cl_llave = ? ";
+        crs=EjecutaRS(query,parametros);
         crs.next();
         cliente.setClLlave(crs.getString("cl_llave"));
     	cliente.setClCodigo(crs.getString("cl_codigo"));

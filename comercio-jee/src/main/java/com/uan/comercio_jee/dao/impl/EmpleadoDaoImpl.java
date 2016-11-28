@@ -19,55 +19,55 @@ public class EmpleadoDaoImpl extends EjecutaDaoJdbc<Empleados> implements Emplea
 	
 	public Empleados create(Empleados empleado) throws ClassNotFoundException, SQLException {
         String query;
-		               
-        /**query = "INSERT INTO empleados VALUES(uuid_generate_v4(),'" + empleado.getEmCodigo() + "','" + empleado.getEmTipoIdent() + "',"
-        		+"'"+empleado.getEmNumeroDent()+"','"+empleado.getEmNombres()+"','"+empleado.getEmApellidos()+"','"+empleado.getEmDireccion()+"' "
-        		+"'"+empleado.getEmTelefono()+"','"+empleado.getEmMovil()+"','"+empleado.getEmCargo()+"','"+empleado.getEmDepartamento()+"' "
-        		+"'"+empleado.getEmArea()+"' "
-        		+"')";**/
-        
+        String[][] parametros={{"EmCodigo","emCodigo"},{"EmTipoIdent","emTipoIdent"},{"EmNumeroDent","emNumeroDent"},{"EmNombres","emNombres"},{"EmApellidos","emApellidos"},{"EmDireccion","emDireccion"},
+        		{"EmTelefono","EmTelefono"},{"EmMovil","emMovil"},{"EmCargo","emCargo"},{"EmDepartamento","emDepartamento"},{"EmArea","emArea"}};
+		                       
         query = "INSERT INTO empleados VALUES(uuid_generate_v4(),?,?,?,?,?,?,?,?,?,?,?)";
         
-        empleado = EjecutaQuery(empleado,query);
+        empleado = EjecutaQuery(empleado,query,parametros);
 
         return empleado;
     }
     
     public Empleados update(Empleados empleado) throws ClassNotFoundException, SQLException {
         String query;
+        String[][] parametros={{"EmCodigo","emCodigo"},{"EmTipoIdent","emTipoIdent"},{"EmNumeroDent","emNumeroDent"},{"EmNombres","emNombres"},{"EmApellidos","emApellidos"},{"EmDireccion","emDireccion"},
+        		{"EmTelefono","EmTelefono"},{"EmMovil","emMovil"},{"EmCargo","emCargo"},{"EmDepartamento","emDepartamento"},{"EmArea","emArea"},{"EmLlave","emLlave"}};
 		               
-        query = "UPDATE empleados SET em_codigo = '" + empleado.getEmCodigo() + "', em_tipo_ident = '" + empleado.getEmTipoIdent() + "', "
-        		+"em_numero_dent = '"+empleado.getEmNumeroDent()+"', "
-        		+"em_nombres ='"+empleado.getEmNombres()+"', "
-        		+"em_apellidos ='"+empleado.getEmApellidos()+"', "
-        		+"em_direccion ='"+empleado.getEmDireccion()+"', "
-        		+"em_telefono ='"+empleado.getEmTelefono()+"', "
-        		+"em_movil ='"+empleado.getEmMovil()+"', "
-        		+"em_cargo ='"+empleado.getEmCargo()+"', "
-        		+"em_departamento ='"+empleado.getEmDepartamento()+"', "
-        		+"em_area ='"+empleado.getEmArea()+"' "
-        		+" WHERE em_llave = '"+empleado.getEmLlave()+"' ";
-        empleado = EjecutaQuery(empleado,query);
+        query = "UPDATE empleados SET em_codigo = ?, em_tipo_ident = ?, "
+        		+"em_numero_dent = ?, "
+        		+"em_nombres =?, "
+        		+"em_apellidos =?, "
+        		+"em_direccion =?, "
+        		+"em_telefono =?, "
+        		+"em_movil =?, "
+        		+"em_cargo =?, "
+        		+"em_departamento =?, "
+        		+"em_area =? "
+        		+" WHERE em_llave = ? ";
+        empleado = EjecutaQuery(empleado,query,parametros);
 
         return empleado;
     }
     
     public void delete(Empleados empleado) throws ClassNotFoundException, SQLException {
         String query;
+        String[][] parametros={{"EmLlave","emLlave"}};
 		               
-        query = "DELETE FROM empleados WHERE em_llave = '" + empleado.getEmLlave() + "' ";
-        EjecutaQuery(empleado,query);
+        query = "DELETE FROM empleados WHERE em_llave = ? ";
+        EjecutaQuery(empleado,query,parametros);
 
     }
     
     public List<Empleados> findAll() throws ClassNotFoundException, SQLException {
     	String query;
+    	String[] parametros={};
     	CachedRowSet crs = new CachedRowSetImpl();
         List<Empleados> listempleado = new ArrayList<Empleados>(); 
         Empleados empleado = new Empleados();
 		               
         query = "SELECT * FROM empleados ";
-        crs=EjecutaRS(query);
+        crs=EjecutaRS(query,parametros);
         
         while(crs.next()){
         	empleado.setEmLlave(crs.getString("em_llave"));
@@ -90,11 +90,12 @@ public class EmpleadoDaoImpl extends EjecutaDaoJdbc<Empleados> implements Emplea
 
 	public Empleados findById(String emllave) throws ClassNotFoundException, SQLException {
 		String query;
+		String[] parametros={emllave};
         Empleados empleado = new Empleados(); 
         CachedRowSet crs = new CachedRowSetImpl();
 		               
-        query = "SELECT * FROM empleados WHERE em_llave = '" + emllave + "' ";
-        crs=EjecutaRS(query);
+        query = "SELECT * FROM empleados WHERE em_llave = ? ";
+        crs=EjecutaRS(query,parametros);
         crs.next();
         empleado.setEmLlave(crs.getString("em_llave"));
     	empleado.setEmCodigo(crs.getString("em_codigo"));

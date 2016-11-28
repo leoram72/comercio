@@ -14,8 +14,10 @@ public interface AreaDao {
      * @return 
      * @throws SQLException 
      * @throws ClassNotFoundException 
+     * @throws SecurityException 
+     * @throws NoSuchFieldException 
      */
-    Areas create(Areas area) throws ClassNotFoundException, SQLException;
+    Areas create(Areas area) throws ClassNotFoundException, SQLException, NoSuchFieldException, SecurityException;
 
     /**
      * Actualiza un área existente. La llave del area no puede ser modificada.

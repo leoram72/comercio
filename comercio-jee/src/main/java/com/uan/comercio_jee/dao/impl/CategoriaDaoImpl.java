@@ -18,38 +18,42 @@ public class CategoriaDaoImpl extends EjecutaDaoJdbc<Categorias> implements Cate
 	
 	public Categorias create(Categorias categoria) throws ClassNotFoundException, SQLException {
         String query;
+        String[][] parametros={{"CtCodigo","ctCodigo"},{"CtDesc","ctDesc"}};
 		               
-        query = "INSERT INTO categorias VALUES(uuid_generate_v4(),'" + categoria.getCtCodigo() + "','" + categoria.getCtDesc() + "')";
-        categoria = EjecutaQuery(categoria,query);
+        query = "INSERT INTO categorias VALUES(uuid_generate_v4(?,?)";
+        categoria = EjecutaQuery(categoria,query,parametros);
 
         return categoria;
     }
     
     public Categorias update(Categorias categoria) throws ClassNotFoundException, SQLException {
         String query;
+        String[][] parametros={{"CtCodigo","ctCodigo"},{"CtDesc","ctDesc"},{"CtLlave"},{"ctLlave"}};
 		               
-        query = "UPDATE categorias SET ct_codigo = '" + categoria.getCtCodigo() + "', ct_desc = '" + categoria.getCtDesc() + "' WHERE ct_llave = '"+categoria.getCtLlave()+"' ";
-        categoria = EjecutaQuery(categoria,query);
+        query = "UPDATE categorias SET ct_codigo = ?, ct_desc = ? WHERE ct_llave = ? ";
+        categoria = EjecutaQuery(categoria,query,parametros);
 
         return categoria;
     }
     
     public void delete(Categorias categoria) throws ClassNotFoundException, SQLException {
         String query;
+        String[][] parametros={{"CtLlave"},{"ctLlave"}};
 		               
-        query = "DELETE FROM categorias WHERE ct_llave = '" + categoria.getCtLlave() + "' ";
-        EjecutaQuery(categoria,query);
+        query = "DELETE FROM categorias WHERE ct_llave = ? ";
+        EjecutaQuery(categoria,query,parametros);
 
     }
     
     public List<Categorias> findAll() throws ClassNotFoundException, SQLException {
     	String query;
+    	String[] parametros={};
     	CachedRowSet crs = new CachedRowSetImpl();
         List<Categorias> listcategoria = new ArrayList<Categorias>(); 
         Categorias categoria = new Categorias();
 		               
         query = "SELECT * FROM categorias ";
-        crs=EjecutaRS(query);
+        crs=EjecutaRS(query,parametros);
         
         while(crs.next()){
         	categoria.setCtLlave(crs.getString("ct_llave"));
@@ -63,11 +67,12 @@ public class CategoriaDaoImpl extends EjecutaDaoJdbc<Categorias> implements Cate
 
 	public Categorias findById(String ctllave) throws ClassNotFoundException, SQLException {
 		String query;
+		String[] parametros={ctllave};
         Categorias categoria = new Categorias(); 
         CachedRowSet crs = new CachedRowSetImpl();
 		               
         query = "SELECT * FROM categorias WHERE ct_llave = '" + ctllave + "' ";
-        crs=EjecutaRS(query);
+        crs=EjecutaRS(query,parametros);
         crs.next();
         categoria.setCtLlave(crs.getString("ct_llave"));
         categoria.setCtCodigo(crs.getString("ct_codigo"));

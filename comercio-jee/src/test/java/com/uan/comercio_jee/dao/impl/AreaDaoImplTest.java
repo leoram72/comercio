@@ -27,8 +27,8 @@ public class AreaDaoImplTest extends TestCase  {
     public void testCreate() throws ClassNotFoundException, SQLException {
         System.out.println("create");
         Areas area = new Areas();
-        area.setArCodigo("DES-01");
-        area.setArDesc("Area Desarrollo");
+        area.setArCodigo("DES-99");
+        area.setArDesc("Area DE Desarrollo");
         AreaDaoImpl instance = new AreaDaoImpl();
         Areas expResult = area;
         Areas result = instance.create(area);
